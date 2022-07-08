@@ -5,6 +5,7 @@ import com.newwave.demo.payload.request.SearchUserRequest;
 import com.newwave.demo.payload.request.SignupRequest;
 import com.newwave.demo.payload.request.UserRequest;
 import com.newwave.demo.payload.response.JwtResponse;
+import com.newwave.demo.payload.response.UserExcelResponse;
 import com.newwave.demo.payload.response.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +31,6 @@ public interface UserService {
     void updateRole(UserRequest userRequest, Long id);
 
     byte[] exportPDF(Long id);
+
+    UserExcelResponse exportExcel(SearchUserRequest request);
 }

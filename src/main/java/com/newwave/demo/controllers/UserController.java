@@ -3,6 +3,7 @@ package com.newwave.demo.controllers;
 import com.newwave.demo.payload.request.SearchUserRequest;
 import com.newwave.demo.payload.request.UserRequest;
 import com.newwave.demo.payload.response.MessageResponse;
+import com.newwave.demo.payload.response.UserExcelResponse;
 import com.newwave.demo.payload.response.UserResponse;
 import com.newwave.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -72,9 +78,27 @@ public class UserController {
     }
 
     @PutMapping("/export-pdf/{id}")
-    @PreAuthorize("hasRole('USER')  or hasRole('ADMIN')")
-    public ResponseEntity<?> exportPDF(@PathVariable Long id) {
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> exportPDF(HttpServletResponse response, @PathVariable Long id) {
         byte[] pdf = userService.exportPDF(id);
-        return ResponseEntity.ok(pdf);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        String name = String.format("user.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=" + name);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/export-excel")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity exportExcel(HttpServletResponse response,
+                                                 SearchUserRequest request) {
+        UserExcelResponse data = userService.exportExcel(request);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/vnd.ms-excel"));
+        String name = String.format("user.xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=" + name);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        return new ResponseEntity<>(data.getContent(), headers, HttpStatus.OK);
     }
 }
