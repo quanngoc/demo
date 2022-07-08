@@ -1,0 +1,60 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .main-container {
+            max-width: 700px;
+        }
+
+        td, th {
+            padding: 5px 10px;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        tfoot tr td.hidden-border {
+            border: none
+        }
+
+    </style>
+</head>
+<body>
+<div class="main-container" style="margin: 0 auto; padding-top: 20px;">
+    <div style="padding: 10px; border-radius: 5px 5px 0 0;">
+        <img style="height:150px;"
+             src="https://assets.topdev.vn/images/2022/06/21/TopDev-logo2-HienLeMinh-1655775044.png"/>
+    </div>
+    <div style="width: 100%">
+        <table width="100%" style="border-collapse: collapse; margin-bottom: 50px;" th:classappend="${itemList}">
+            <thead>
+            <tr style="background: #30afcd; color: #fff;" >
+                <th style="font-weight: bold ; text-align: left; border: 1px solid black;" colspan="2" >User Information</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr >
+                <td style="font-weight: bold ;border: 1px solid black;">ID :</td>
+                <td style="font-weight: bold ; border: 1px solid black;" th:text="${ ID}"></td>
+
+            </tr>
+            <tr >
+                <td style="font-weight: bold; border: 1px solid black;" >UserName : </td>
+                <td style="font-weight: bold; border: 1px solid black;" th:text="${USERNAME}"></td>
+
+            </tr>
+            <tr >
+                <td style="font-weight: bold; border: 1px solid black;">EMAIL :</td>
+                <td style="font-weight: bold; border: 1px solid black;" th:text="${EMAIL}" ></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
