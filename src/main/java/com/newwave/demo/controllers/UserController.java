@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<UserResponse>> searchInvoices(SearchUserRequest request,
+    public ResponseEntity<Page<UserResponse>> search(SearchUserRequest request,
                                                              @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                                              @RequestParam(value = "page", defaultValue = "0") int page,
                                                              @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
