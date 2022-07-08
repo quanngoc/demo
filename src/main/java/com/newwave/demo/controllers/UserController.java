@@ -77,7 +77,7 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("update role successfully!"));
     }
 
-    @PutMapping("/export-pdf/{id}")
+    @GetMapping("/export-pdf/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> exportPDF(HttpServletResponse response, @PathVariable Long id) {
         byte[] pdf = userService.exportPDF(id);

@@ -22,7 +22,7 @@ public class UserRequest {
     this.id = id;
   }
 
-  private Set<String> role;
+  private Set<String> roles;
 
   public String getUsername() {
     return username;
@@ -64,11 +64,11 @@ public class UserRequest {
     this.conNewpassword = conNewpassword;
   }
 
-  public Set<String> getRole() {
-    return role;
+  public Set<String> getRoles() {
+    return roles;
   }
 
-  public void setRole(Set<String> role) {
-    this.role = role;
+  public void setRoles(Set<String> roles) {
+    this.roles = roles;
   }
 }

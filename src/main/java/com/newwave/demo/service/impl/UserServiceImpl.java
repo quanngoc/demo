@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
     public void updateRole(UserRequest userRequest, Long id) {
         UserModel userModel = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: User is not found."));
         Set<RoleModel> roleModels = new HashSet<>();
-        userRequest.getRole().forEach(role -> {
+        userRequest.getRoles().forEach(role -> {
             switch (role) {
                 case "admin":
                     RoleModel adminRoleModel = roleRepository.findByName(ERole.ROLE_ADMIN)
