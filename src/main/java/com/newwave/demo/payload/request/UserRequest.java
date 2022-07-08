@@ -11,8 +11,8 @@ public class UserRequest {
   private String email;
 
   private String oldPassword;
-  private String newpassword;
-  private String conNewpassword;
+  private String newPassword;
+  private String conNewPassword;
 
   public Long getId() {
     return id;
@@ -48,20 +48,20 @@ public class UserRequest {
     this.oldPassword = oldPassword;
   }
 
-  public String getNewpassword() {
-    return newpassword;
+  public String getNewPassword() {
+    return newPassword;
   }
 
-  public void setNewpassword(String newpassword) {
-    this.newpassword = newpassword;
+  public void setNewPassword(String newPassword) {
+    this.newPassword = newPassword;
   }
 
-  public String getConNewpassword() {
-    return conNewpassword;
+  public String getConNewPassword() {
+    return conNewPassword;
   }
 
-  public void setConNewpassword(String conNewpassword) {
-    this.conNewpassword = conNewpassword;
+  public void setConNewPassword(String conNewPassword) {
+    this.conNewPassword = conNewPassword;
   }
 
   public Set<String> getRoles() {

@@ -151,10 +151,12 @@ public class UserServiceImpl implements UserService {
 
         Page<UserModel> page = userRepository.findAll(specificationTwo, pageable);
         Function<UserModel, UserResponse> converter = source -> {
+            Set<ERole> roles = source.getRoles().stream().map(i -> i.getName()).collect(Collectors.toSet());
             UserResponse target = new UserResponse();
             target.setId(source.getId());
             target.setUsername(source.getUsername());
             target.setEmail(source.getEmail());
+            target.setRoles(roles);
             return target;
         };
 
@@ -173,14 +175,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse changePassword(UserRequest userRequest) {
-        if (!userRequest.getNewpassword().equals(userRequest.getConNewpassword())) {
+        if (!userRequest.getNewPassword().equals(userRequest.getConNewPassword())) {
             throw new RuntimeException("Error: new password diff confirm new password");
         }
         UserModel userModel = userRepository.findById(userRequest.getId()).orElseThrow(() -> new RuntimeException("Error: User is not found."));
         if (!passwordEncoder.matches(userRequest.getOldPassword(), userModel.getPassword())) {
             throw new RuntimeException("Error: password not correct");
         }
-        userModel.setPassword(encoder.encode(userRequest.getNewpassword()));
+        userModel.setPassword(encoder.encode(userRequest.getNewPassword()));
         userRepository.save(userModel);
 
         UserResponse userResponse = new UserResponse();
@@ -203,7 +205,7 @@ public class UserServiceImpl implements UserService {
         Set<RoleModel> roleModels = new HashSet<>();
         userRequest.getRoles().forEach(role -> {
             switch (role) {
-                case "admin":
+                case "ROLE_ADMIN":
                     RoleModel adminRoleModel = roleRepository.findByName(ERole.ROLE_ADMIN)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roleModels.add(adminRoleModel);
