@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse changePassword(UserRequest userRequest) {
         if (!userRequest.getNewPassword().equals(userRequest.getConNewPassword())) {
-            throw new RuntimeException("Error: new password diff confirm new password");
+            throw new RuntimeException("Error: confirm new password not correct");
         }
         UserModel userModel = userRepository.findById(userRequest.getId()).orElseThrow(() -> new RuntimeException("Error: User is not found."));
         if (!passwordEncoder.matches(userRequest.getOldPassword(), userModel.getPassword())) {
