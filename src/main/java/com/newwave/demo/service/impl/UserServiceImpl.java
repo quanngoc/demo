@@ -23,7 +23,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jxls.common.Context;
 import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.util.JxlsHelper;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -42,13 +41,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,30 +103,10 @@ public class UserServiceImpl implements UserService {
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signUpRequest.getRole();
         Set<RoleModel> roleModels = new HashSet<>();
-
-        if (strRoles == null) {
-            RoleModel userRoleModel = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roleModels.add(userRoleModel);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        RoleModel adminRoleModel = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roleModels.add(adminRoleModel);
-
-                        break;
-                    default:
-                        RoleModel userRoleModel = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roleModels.add(userRoleModel);
-                }
-            });
-        }
-
+        RoleModel userRoleModel = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roleModels.add(userRoleModel);
         userModel.setRoles(roleModels);
         userRepository.save(userModel);
     }
@@ -203,20 +180,18 @@ public class UserServiceImpl implements UserService {
     public void updateRole(UserRequest userRequest, Long id) {
         UserModel userModel = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: User is not found."));
         Set<RoleModel> roleModels = new HashSet<>();
-        userRequest.getRoles().forEach(role -> {
-            switch (role) {
-                case "ROLE_ADMIN":
-                    RoleModel adminRoleModel = roleRepository.findByName(ERole.ROLE_ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                    roleModels.add(adminRoleModel);
+        switch (userRequest.getRole()) {
+            case "ROLE_ADMIN":
+                RoleModel adminRoleModel = roleRepository.findByName(ERole.ROLE_ADMIN)
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                roleModels.add(adminRoleModel);
+                break;
 
-                    break;
-                default:
-                    RoleModel userRoleModel = roleRepository.findByName(ERole.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                    roleModels.add(userRoleModel);
-            }
-        });
+            default:
+                RoleModel userRoleModel = roleRepository.findByName(ERole.ROLE_USER)
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                roleModels.add(userRoleModel);
+        }
         userModel.setRoles(roleModels);
         userRepository.save(userModel);
     }
@@ -268,7 +243,8 @@ public class UserServiceImpl implements UserService {
                 JxlsHelper.getInstance().processTemplate(context, transformer);
                 return os.toByteArray();
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
         return new byte[0];
     }
 }
