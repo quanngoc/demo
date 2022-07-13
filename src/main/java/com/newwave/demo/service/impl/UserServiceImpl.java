@@ -18,6 +18,7 @@ import com.newwave.demo.security.jwt.JwtUtils;
 import com.newwave.demo.service.PdfService;
 import com.newwave.demo.service.UserService;
 import com.newwave.demo.utils.ExcelTemplateFile;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jxls.common.Context;
@@ -152,6 +153,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse changePassword(UserRequest userRequest) {
+
+        if (StringUtils.isEmpty(userRequest.getNewPassword())) {
+            throw new RuntimeException("Error: new password cannot be null");
+        }
+
+        if (StringUtils.isEmpty(userRequest.getConNewPassword())) {
+            throw new RuntimeException("Error: confirm new password cannot be null");
+        }
+
         if (!userRequest.getNewPassword().equals(userRequest.getConNewPassword())) {
             throw new RuntimeException("Error: confirm new password not correct");
         }
