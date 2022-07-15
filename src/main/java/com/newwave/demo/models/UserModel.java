@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
-public class UserModel {
+public class UserModel extends ItemModel{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -30,6 +30,10 @@ public class UserModel {
   @Size(max = 120)
   private String password;
 
+  private String name;
+
+  private Integer age;
+
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(  name = "user_roles", 
         joinColumns = @JoinColumn(name = "user_id"), 
@@ -39,10 +43,12 @@ public class UserModel {
   public UserModel() {
   }
 
-  public UserModel(String username, String email, String password) {
+  public UserModel(String username, String email, String password, String name, Integer age) {
     this.username = username;
     this.email = email;
     this.password = password;
+    this.name = name;
+    this.age = age;
   }
 
   public Long getId() {
@@ -83,5 +89,21 @@ public class UserModel {
 
   public void setRoles(Set<RoleModel> roleModels) {
     this.roleModels = roleModels;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getAge() {
+    return age;
+  }
+
+  public void setAge(Integer age) {
+    this.age = age;
   }
 }

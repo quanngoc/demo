@@ -2,6 +2,7 @@ package com.newwave.demo.controllers;
 
 import com.newwave.demo.payload.request.SearchUserRequest;
 import com.newwave.demo.payload.request.UserRequest;
+import com.newwave.demo.payload.response.projection.ChartResponse;
 import com.newwave.demo.payload.response.MessageResponse;
 import com.newwave.demo.payload.response.UserExcelResponse;
 import com.newwave.demo.payload.response.UserResponse;
@@ -63,6 +64,14 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER')  or hasRole('ADMIN')")
+    public ResponseEntity<?> update(@RequestBody UserRequest userRequest, @PathVariable Long id) {
+        userRequest.setId(id);
+        UserResponse userResponse = userService.update(userRequest);
+        return ResponseEntity.ok(userResponse);
+    }
+
     @PutMapping("/reset-password/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> resetPassword(@PathVariable Long id) {
@@ -100,5 +109,12 @@ public class UserController {
         response.setHeader("Content-Disposition", "attachment; filename=" + name);
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         return new ResponseEntity<>(data.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/chart-age")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ChartResponse> chartAge() {
+        ChartResponse chartResponse = userService.chartAge();
+        return new ResponseEntity<>(chartResponse, HttpStatus.OK);
     }
 }

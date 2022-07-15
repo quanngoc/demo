@@ -7,6 +7,7 @@ import com.newwave.demo.payload.request.LoginRequest;
 import com.newwave.demo.payload.request.SearchUserRequest;
 import com.newwave.demo.payload.request.SignupRequest;
 import com.newwave.demo.payload.request.UserRequest;
+import com.newwave.demo.payload.response.projection.ChartResponse;
 import com.newwave.demo.payload.response.JwtResponse;
 import com.newwave.demo.payload.response.UserExcelResponse;
 import com.newwave.demo.payload.response.UserResponse;
@@ -99,10 +100,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(SignupRequest signUpRequest) {
+        validate(signUpRequest);
         // Create new user's account
         UserModel userModel = new UserModel(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+                encoder.encode(signUpRequest.getPassword()),
+                signUpRequest.getName(),
+                signUpRequest.getAge());
 
         Set<RoleModel> roleModels = new HashSet<>();
         RoleModel userRoleModel = roleRepository.findByName(ERole.ROLE_USER)
@@ -120,7 +124,7 @@ public class UserServiceImpl implements UserService {
         userResponse.setId(userModel.getId());
         userResponse.setUsername(userModel.getUsername());
         userResponse.setEmail(userModel.getEmail());
-        return userResponse;
+        return populateUserResponse(userModel);
     }
 
     @Override
@@ -129,13 +133,7 @@ public class UserServiceImpl implements UserService {
 
         Page<UserModel> page = userRepository.findAll(specificationTwo, pageable);
         Function<UserModel, UserResponse> converter = source -> {
-            Set<ERole> roles = source.getRoles().stream().map(i -> i.getName()).collect(Collectors.toSet());
-            UserResponse target = new UserResponse();
-            target.setId(source.getId());
-            target.setUsername(source.getUsername());
-            target.setEmail(source.getEmail());
-            target.setRoles(roles);
-            return target;
+            return populateUserResponse(source);
         };
 
         return page.map(converter);
@@ -163,7 +161,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!userRequest.getNewPassword().equals(userRequest.getConNewPassword())) {
-            throw new RuntimeException("Error: confirm new password not correct");
+            throw new RuntimeException("Error: confirm password don't match!");
         }
         UserModel userModel = userRepository.findById(userRequest.getId()).orElseThrow(() -> new RuntimeException("Error: User is not found."));
         if (!passwordEncoder.matches(userRequest.getOldPassword(), userModel.getPassword())) {
@@ -172,11 +170,7 @@ public class UserServiceImpl implements UserService {
         userModel.setPassword(encoder.encode(userRequest.getNewPassword()));
         userRepository.save(userModel);
 
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(userModel.getId());
-        userResponse.setUsername(userModel.getUsername());
-        userResponse.setEmail(userModel.getEmail());
-        return userResponse;
+        return populateUserResponse(userModel);
     }
 
     @Override
@@ -226,6 +220,30 @@ public class UserServiceImpl implements UserService {
         return data;
     }
 
+    @Override
+    public UserResponse update(UserRequest userRequest) {
+        if (StringUtils.isEmpty(userRequest.getName())) {
+            throw new RuntimeException("Error: name cannot be null");
+        }
+
+        UserModel userModel = userRepository.findById(userRequest.getId()).orElseThrow(() -> new RuntimeException("Error: User is not found."));
+
+        userModel.setName(userRequest.getName());
+        userModel.setAge(userRequest.getAge());
+        userRepository.save(userModel);
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(userModel.getId());
+        userResponse.setUsername(userModel.getUsername());
+        userResponse.setEmail(userModel.getEmail());
+        return userResponse;
+    }
+
+    @Override
+    public ChartResponse chartAge() {
+        return userRepository.getChartForAge();
+    }
+
     private List<UserResponse> findUser(SearchUserRequest request) {
         int pageIndex = 0;
         Pageable pageable = PageRequest.of(pageIndex, PAGE_SIZE);
@@ -256,5 +274,33 @@ public class UserServiceImpl implements UserService {
         } catch (IOException e) {
         }
         return new byte[0];
+    }
+
+    private UserResponse populateUserResponse(UserModel userModel) {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(userModel.getId());
+        userResponse.setUsername(userModel.getUsername());
+        userResponse.setEmail(userModel.getEmail());
+        userResponse.setName(userModel.getName());
+        userResponse.setAge(userModel.getAge());
+        Set<ERole> roles = userModel.getRoles().stream().map(i -> i.getName()).collect(Collectors.toSet());
+        userResponse.setRoles(roles);
+        return userResponse;
+    }
+
+    private void validate(SignupRequest signUpRequest) {
+        if (!signUpRequest.getPassword().equals(signUpRequest.getConNewPassword())) {
+            throw new RuntimeException("Error: confirm password don't match!");
+        }
+        if (StringUtils.isEmpty(signUpRequest.getName())) {
+            throw new RuntimeException("Error: name cannot be null !");
+        }
+        if (this.existsByUsername(signUpRequest.getUsername())) {
+            throw new RuntimeException("Error: Username is already !");
+        }
+
+        if (this.existsByEmail(signUpRequest.getEmail())) {
+            throw new RuntimeException("Error: Email is already in use!");
+        }
     }
 }

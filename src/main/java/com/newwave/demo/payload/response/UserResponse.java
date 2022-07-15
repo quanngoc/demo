@@ -12,6 +12,9 @@ public class UserResponse {
     private String username;
     private String email;
 
+    private String name;
+
+    private Integer age;
     private Set<ERole> roles;
 
     public Long getId() {
@@ -44,5 +47,21 @@ public class UserResponse {
 
     public void setRoles(Set<ERole> roles) {
         this.roles = roles;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 }

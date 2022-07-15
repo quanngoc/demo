@@ -1,9 +1,12 @@
 package com.newwave.demo.payload.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Set;
 
 import javax.validation.constraints.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SignupRequest {
   @NotBlank
   @Size(min = 3, max = 20)
@@ -19,6 +22,13 @@ public class SignupRequest {
   @NotBlank
   @Size(min = 6, max = 40)
   private String password;
+
+  private String name;
+
+  private int age;
+
+  private String conNewPassword;
+
 
   public String getUsername() {
     return username;
@@ -50,5 +60,29 @@ public class SignupRequest {
 
   public void setRole(Set<String> role) {
     this.role = role;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public int getAge() {
+    return age;
+  }
+
+  public void setAge(int age) {
+    this.age = age;
+  }
+
+  public String getConNewPassword() {
+    return conNewPassword;
+  }
+
+  public void setConNewPassword(String conNewPassword) {
+    this.conNewPassword = conNewPassword;
   }
 }
