@@ -1,0 +1,50 @@
+stages:
+  - clean
+  - build
+  - build-docker-image
+  - push-image-to-docker-hub
+
+variables:
+  IMAGE_OPENJDK_GRADLE: gradle:7.3.3-jdk17-alpine
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+clean:
+  image: $IMAGE_OPENJDK_GRADLE
+  stage: clean
+  script:
+    - echo "Cleaning leftovers from previous builds"
+    - sh $CI_PROJECT_DIR/gradlew clean
+
+build:
+  image: $IMAGE_OPENJDK_GRADLE
+  stage: build
+  script:
+    - gradle bootJar
+  artifacts:
+    paths:
+      - build/libs/*.jar
+  only:
+    - main
+
+build-docker-image:
+  stage: build-docker-image
+  services:
+    - docker:dind
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker info
+    - docker build -t demo .
+Push Docker Image to DockerHub:
+  stage: push-image-to-docker-hub
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+  script:
+    - docker info
+    - docker push 1231996/demo
