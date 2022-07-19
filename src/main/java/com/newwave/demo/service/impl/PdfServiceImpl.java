@@ -16,7 +16,7 @@ import java.util.Map;
 public class PdfServiceImpl implements PdfService {
 
     private final SpringTemplateEngine templateEngine;
-    private static final String EMAIL_PDF_TEMPLATE = "email-template";
+    private static final String EMAIL_PDF_TEMPLATE = "pdf-template";
 
     public PdfServiceImpl(SpringTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
