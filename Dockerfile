@@ -1,7 +1,6 @@
-FROM openjdk:11
+FROM openjdk:17
 LABEL maintainer="quanngoc"
 VOLUME /tmp
+COPY ./build/libs/*.jar demo.jar
 EXPOSE 8080
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} demo-0.0.1-SNAPSHOT.jar
-ENTRYPOINT ["java","-Dspring.profiles.active=dev","-jar","demo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=dev","demo.jar"]
