@@ -244,6 +244,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.getChartForAge();
     }
 
+    @Override
+    public byte[] exportAllUserPDF() {
+        List<UserModel> userModels = userRepository.findAll();
+        File file = pdfService.generateAllUserPdf(userModels);
+        try {
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            return bytes;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private List<UserResponse> findUser(SearchUserRequest request) {
         int pageIndex = 0;
         Pageable pageable = PageRequest.of(pageIndex, PAGE_SIZE);

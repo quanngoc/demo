@@ -117,4 +117,16 @@ public class UserController {
         ChartResponse chartResponse = userService.chartAge();
         return new ResponseEntity<>(chartResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/export-pdf")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> exportAllUserPDF(HttpServletResponse response) {
+        byte[] pdf = userService.exportAllUserPDF();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        String name = String.format("all-user.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=" + name);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+    }
 }

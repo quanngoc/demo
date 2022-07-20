@@ -38,4 +38,6 @@ public interface UserService {
     UserResponse update(UserRequest userRequest);
 
     ChartResponse chartAge();
+
+    byte[] exportAllUserPDF();
 }

@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .main-container {
+            max-width: 700px;
+        }
+
+        td, th {
+            padding: 5px 10px;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        tfoot tr td.hidden-border {
+            border: none
+        }
+
+        @page {
+            size: A4;
+        }
+
+    </style>
+</head>
+<body>
+<div class="main-container" style="margin: 0 auto; padding-top: 10px">
+    <div style="padding: 10px; border-radius: 5px 5px 0 0;">
+        <img style="height:150px;"
+             src="https://assets.topdev.vn/images/2022/06/21/TopDev-logo2-HienLeMinh-1655775044.png"/>
+    </div>
+    <div style="width: 100%">
+        <table width="100%" style="border-collapse: collapse ; height: max-content" th:classappend="${ITEMS} ?: display-none">
+            <thead>
+            <tr style="background: #30afcd; color: #fff;">
+                <th style="font-weight: bold; text-align: left; border: 1px solid #f1f1f1">ID</th>
+                <th style="font-weight: bold; text-align: left;  border: 1px solid #f1f1f1 ">Username</th>
+                <th style="font-weight: bold; text-align: left;  border: 1px solid #f1f1f1 ">Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item: ${ITEMS}">
+                <td style="border: 1px solid #f1f1f1" th:text="${item.id}"></td>
+                <td style="text-align: left;border: 1px solid #f1f1f1" th:text="${item.username}"></td>
+                <td style="text-align: left;border: 1px solid #f1f1f1" th:text="${item.email}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
