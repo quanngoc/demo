@@ -7,12 +7,13 @@ import com.newwave.demo.payload.request.LoginRequest;
 import com.newwave.demo.payload.request.SearchUserRequest;
 import com.newwave.demo.payload.request.SignupRequest;
 import com.newwave.demo.payload.request.UserRequest;
-import com.newwave.demo.payload.response.projection.ChartResponse;
 import com.newwave.demo.payload.response.JwtResponse;
 import com.newwave.demo.payload.response.UserExcelResponse;
 import com.newwave.demo.payload.response.UserResponse;
+import com.newwave.demo.payload.response.projection.ChartResponse;
 import com.newwave.demo.repository.RoleRepository;
 import com.newwave.demo.repository.UserRepository;
+import com.newwave.demo.repository.dao.UserDao;
 import com.newwave.demo.repository.specification.UserSpecification;
 import com.newwave.demo.security.UserDetailsImpl;
 import com.newwave.demo.security.jwt.JwtUtils;
@@ -71,6 +72,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PdfService pdfService;
+
+    @Autowired
+    private UserDao userDao;
 
     private static final String DEFAULT_PASSWORD = "123456789";
 
@@ -244,9 +248,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public byte[] exportAllUserPDF() {
-        SearchUserRequest request = new SearchUserRequest();
-        request.setPageSize(PDF_PAGE_SIZE);
-        Map<Integer, List<UserResponse>> userModels = this.findAllUser(request);
+        Map<Integer, List<UserModel>> userModels = this.findAllUser();
         File file = pdfService.generateAllUserPdf(userModels);
         try {
             byte[] bytes = Files.readAllBytes(file.toPath());
@@ -266,17 +268,17 @@ public class UserServiceImpl implements UserService {
                 break;
             }
             data.addAll(detailData.getContent());
-            pageable = PageRequest.of(++pageIndex, PAGE_SIZE);
+            pageable = PageRequest.of(++pageIndex, PAGE_SIZE + 5);
         }
         return data;
     }
 
-    private Map<Integer, List<UserResponse>> findAllUser(SearchUserRequest request) {
+    private Map<Integer, List<UserModel>> findAllUser() {
         int pageIndex = 0;
         Pageable pageable = PageRequest.of(pageIndex, PDF_PAGE_SIZE);
-        Map<Integer,List<UserResponse>> dataMap = new HashMap<>();
+        Map<Integer, List<UserModel>> dataMap = new HashMap<>();
         while (true) {
-            Page<UserResponse> detailData = this.search(request, pageable);
+            Page<UserModel> detailData = userDao.getUser(pageable);
             if (CollectionUtils.isEmpty(detailData.getContent())) {
                 break;
             }

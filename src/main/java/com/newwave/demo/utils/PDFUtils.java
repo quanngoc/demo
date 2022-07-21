@@ -1,7 +1,6 @@
 package com.newwave.demo.utils;
 
 import com.lowagie.text.DocumentException;
-import lombok.extern.slf4j.Slf4j;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 public class PDFUtils {
     public static File buildPDF(String template, Map<String, Object> attributes,
-                                  ITemplateEngine templateEngine) throws IOException, DocumentException {
+                                ITemplateEngine templateEngine) throws IOException, DocumentException {
         File file = File.createTempFile("temp", ".pdf");
         file.deleteOnExit();
 

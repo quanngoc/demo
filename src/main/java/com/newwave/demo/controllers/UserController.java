@@ -2,10 +2,10 @@ package com.newwave.demo.controllers;
 
 import com.newwave.demo.payload.request.SearchUserRequest;
 import com.newwave.demo.payload.request.UserRequest;
-import com.newwave.demo.payload.response.projection.ChartResponse;
 import com.newwave.demo.payload.response.MessageResponse;
 import com.newwave.demo.payload.response.UserExcelResponse;
 import com.newwave.demo.payload.response.UserResponse;
+import com.newwave.demo.payload.response.projection.ChartResponse;
 import com.newwave.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,9 +39,9 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserResponse>> search(SearchUserRequest request,
-                                                             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                                             @RequestParam(value = "page", defaultValue = "0") int page,
-                                                             @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+                                                     @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                                     @RequestParam(value = "page", defaultValue = "0") int page,
+                                                     @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
         Sort sortable = null;
         if (sort.equals("ASC")) {
             sortable = Sort.by("id").ascending();
@@ -101,7 +101,7 @@ public class UserController {
     @GetMapping("/export-excel")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity exportExcel(HttpServletResponse response,
-                                                 SearchUserRequest request) {
+                                      SearchUserRequest request) {
         UserExcelResponse data = userService.exportExcel(request);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/vnd.ms-excel"));

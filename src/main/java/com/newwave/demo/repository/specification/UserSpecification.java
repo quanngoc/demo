@@ -21,12 +21,12 @@ public class UserSpecification extends SearchSpecification<SearchUserRequest, Us
         List<Predicate> predicates = new ArrayList<Predicate>();
 
         if (StringUtils.isNotEmpty(search.getUserName())) {
-            Predicate likeFirstName = criteriaBuilder.like(root.get("username"), "%" + search.getUserName() + "%" );
+            Predicate likeFirstName = criteriaBuilder.like(root.get("username"), "%" + search.getUserName() + "%");
             predicates.add(likeFirstName);
         }
 
         if (StringUtils.isNotEmpty(search.getEmail())) {
-            Predicate likeLastName = criteriaBuilder.like(root.get("email"), "%" + search.getEmail() + "%" );
+            Predicate likeLastName = criteriaBuilder.like(root.get("email"), "%" + search.getEmail() + "%");
             predicates.add(likeLastName);
         }
 

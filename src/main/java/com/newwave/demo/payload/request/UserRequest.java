@@ -7,14 +7,11 @@ public class UserRequest {
     private Long id;
     private String username;
     private String email;
-
     private String oldPassword;
     private String newPassword;
     private String conNewPassword;
     private String role;
-
     private String name;
-
     private Integer age;
 
     public Long getId() {

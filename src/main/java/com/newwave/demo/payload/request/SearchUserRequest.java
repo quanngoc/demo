@@ -1,6 +1,7 @@
 package com.newwave.demo.payload.request;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor

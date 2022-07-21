@@ -1,6 +1,6 @@
 package com.newwave.demo.utils;
 
-public enum  ExcelTemplateFile {
+public enum ExcelTemplateFile {
     USER_EXCEL("templates/user_template.xlsx"),
     ;
     private String filePath;

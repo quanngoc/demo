@@ -1,7 +1,8 @@
 package com.newwave.demo.payload.response;
 
 import com.newwave.demo.models.ERole;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
@@ -11,9 +12,7 @@ public class UserResponse {
     private Long id;
     private String username;
     private String email;
-
     private String name;
-
     private Integer age;
     private Set<ERole> roles;
 

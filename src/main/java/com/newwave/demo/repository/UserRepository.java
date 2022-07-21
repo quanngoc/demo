@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<UserModel, Long> , JpaSpecificationExecutor<UserModel> {
+public interface UserRepository extends JpaRepository<UserModel, Long>, JpaSpecificationExecutor<UserModel> {
     Optional<UserModel> findByUsername(String username);
 
     Boolean existsByUsername(String username);

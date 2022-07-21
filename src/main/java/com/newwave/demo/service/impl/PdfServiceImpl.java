@@ -5,7 +5,6 @@ import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.lowagie.text.DocumentException;
 import com.newwave.demo.models.UserModel;
-import com.newwave.demo.payload.response.UserResponse;
 import com.newwave.demo.service.PdfService;
 import com.newwave.demo.utils.PDFUtils;
 import org.springframework.stereotype.Service;
@@ -51,10 +50,10 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public File generateAllUserPdf(Map<Integer, List<UserResponse>> userModels) {
+    public File generateAllUserPdf(Map<Integer, List<UserModel>> userModels) {
         try {
             List<File> files = new ArrayList<>();
-            for (Map.Entry<Integer, List<UserResponse>> entry : userModels.entrySet()) {
+            for (Map.Entry<Integer, List<UserModel>> entry : userModels.entrySet()) {
                 Map<String, Object> attributes = new LinkedHashMap<>();
                 attributes.put("PAGE", entry.getKey());
                 attributes.put("ITEMS", entry.getValue());
@@ -74,21 +73,21 @@ public class PdfServiceImpl implements PdfService {
     }
 
     private File mergeFile(List<File> files) throws IOException, com.itextpdf.text.DocumentException {
-        File file = File.createTempFile("temp", ".pdf");
+        File tempFile = File.createTempFile("temp", ".pdf");
 
         Document document = new Document();
-        OutputStream outputStream = new FileOutputStream(file);
+        OutputStream outputStream = new FileOutputStream(tempFile);
         PdfCopy copy = new PdfCopy(document, outputStream);
 
         document.open();
-        for (File file1 : files){
-            PdfReader reader = new PdfReader(file1.getPath());
+        for (File file : files) {
+            PdfReader reader = new PdfReader(file.getPath());
             copy.addDocument(reader);
             copy.freeReader(reader);
             reader.close();
         }
         document.close();
 
-        return file;
+        return tempFile;
     }
 }
