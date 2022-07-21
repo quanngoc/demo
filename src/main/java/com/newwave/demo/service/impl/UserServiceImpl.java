@@ -268,7 +268,7 @@ public class UserServiceImpl implements UserService {
                 break;
             }
             data.addAll(detailData.getContent());
-            pageable = PageRequest.of(++pageIndex, PAGE_SIZE + 5);
+            pageable = PageRequest.of(++pageIndex, PAGE_SIZE);
         }
         return data;
     }
