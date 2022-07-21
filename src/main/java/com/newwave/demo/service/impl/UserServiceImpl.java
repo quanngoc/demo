@@ -43,16 +43,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
     private static final int PAGE_SIZE = 1000;
+    private static final int PDF_PAGE_SIZE = 27;
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -246,7 +244,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public byte[] exportAllUserPDF() {
-        List<UserModel> userModels = userRepository.findAll();
+        SearchUserRequest request = new SearchUserRequest();
+        request.setPageSize(PDF_PAGE_SIZE);
+        Map<Integer, List<UserResponse>> userModels = this.findAllUser(request);
         File file = pdfService.generateAllUserPdf(userModels);
         try {
             byte[] bytes = Files.readAllBytes(file.toPath());
@@ -270,6 +270,22 @@ public class UserServiceImpl implements UserService {
         }
         return data;
     }
+
+    private Map<Integer, List<UserResponse>> findAllUser(SearchUserRequest request) {
+        int pageIndex = 0;
+        Pageable pageable = PageRequest.of(pageIndex, PDF_PAGE_SIZE);
+        Map<Integer,List<UserResponse>> dataMap = new HashMap<>();
+        while (true) {
+            Page<UserResponse> detailData = this.search(request, pageable);
+            if (CollectionUtils.isEmpty(detailData.getContent())) {
+                break;
+            }
+            dataMap.put(detailData.getNumber(), detailData.getContent());
+            pageable = PageRequest.of(++pageIndex, PDF_PAGE_SIZE + 5);
+        }
+        return dataMap;
+    }
+
 
     protected byte[] exportExcel(UserExcelResponse exportData) {
         ClassPathResource resource = new ClassPathResource(ExcelTemplateFile.USER_EXCEL.filePath());

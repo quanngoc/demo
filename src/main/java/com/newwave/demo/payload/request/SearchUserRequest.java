@@ -9,6 +9,8 @@ public class SearchUserRequest {
     private String userName;
     private String email;
 
+    private Integer pageSize;
+
 
     public Long getId() {
         return id;
@@ -32,5 +34,13 @@ public class SearchUserRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }
